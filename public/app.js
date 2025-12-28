@@ -36,7 +36,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
       
       // Fecha sidebar no mobile
       if (window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('open');
+        closeSidebar();
       }
     }
   });
@@ -79,37 +79,62 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// Sidebar toggle (mobile)
-document.getElementById('sidebarToggle')?.addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('open');
+// Botão hambúrguer flutuante (mobile)
+const floatingMenuBtn = document.getElementById('floatingMenuBtn');
+const sidebar = document.getElementById('sidebar');
+const sidebarClose = document.getElementById('sidebarClose');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar() {
+  if (window.innerWidth <= 768 && sidebar) {
+    sidebar.classList.add('open');
+    if (sidebarOverlay) sidebarOverlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  if (sidebar) sidebar.classList.remove('open');
+  if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// Abre sidebar com botão flutuante
+floatingMenuBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  openSidebar();
+});
+
+// Fecha sidebar com botão X dentro do sidebar
+sidebarClose?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  closeSidebar();
+});
+
+// Fecha sidebar ao clicar no overlay
+sidebarOverlay?.addEventListener('click', () => {
+  closeSidebar();
 });
 
 // Fecha sidebar ao clicar fora (mobile)
 document.addEventListener('click', (e) => {
-  const sidebar = document.getElementById('sidebar');
-  const toggle = document.getElementById('sidebarToggle');
-  
-  // Só fecha no mobile (até 768px)
   if (window.innerWidth <= 768 && 
       sidebar &&
       !sidebar.contains(e.target) && 
-      !toggle?.contains(e.target) &&
+      !floatingMenuBtn?.contains(e.target) &&
       sidebar.classList.contains('open')) {
-    sidebar.classList.remove('open');
-    // Previne scroll do body quando sidebar está aberta
-    document.body.style.overflow = '';
+    closeSidebar();
   }
 });
 
-// Previne scroll do body quando sidebar está aberta no mobile
-const sidebar = document.getElementById('sidebar');
-if (sidebar) {
+// Atualiza visibilidade do botão flutuante quando sidebar abre/fecha
+if (sidebar && floatingMenuBtn) {
   const observer = new MutationObserver(() => {
     if (window.innerWidth <= 768) {
       if (sidebar.classList.contains('open')) {
-        document.body.style.overflow = 'hidden';
+        floatingMenuBtn.style.display = 'none';
       } else {
-        document.body.style.overflow = '';
+        floatingMenuBtn.style.display = 'flex';
       }
     }
   });
@@ -119,6 +144,96 @@ if (sidebar) {
     attributeFilter: ['class']
   });
 }
+
+// Esconde botão flutuante em telas maiores
+window.addEventListener('resize', () => {
+  if (floatingMenuBtn) {
+    if (window.innerWidth > 768) {
+      floatingMenuBtn.style.display = 'none';
+      closeSidebar();
+    } else if (sidebar && !sidebar.classList.contains('open')) {
+      floatingMenuBtn.style.display = 'flex';
+    }
+  }
+});
+
+// Inicializa visibilidade do botão flutuante
+if (floatingMenuBtn && window.innerWidth <= 768) {
+  floatingMenuBtn.style.display = 'flex';
+}
+
+// ============================================
+// SIDEBAR COLLAPSE/EXPAND (DESKTOP)
+// ============================================
+
+const sidebarToggleDesktop = document.getElementById('sidebarToggleDesktop');
+
+// Salva estado no localStorage
+function saveSidebarState() {
+  if (window.innerWidth > 768 && sidebar) {
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    localStorage.setItem('sidebarCollapsed', isCollapsed.toString());
+  }
+}
+
+// Função para expandir o sidebar
+function expandSidebar() {
+  if (window.innerWidth > 768 && sidebar && sidebar.classList.contains('collapsed')) {
+    sidebar.classList.remove('collapsed');
+    document.body.classList.remove('sidebar-collapsed');
+    saveSidebarState();
+  }
+}
+
+// Função para retrair o sidebar
+function collapseSidebar() {
+  if (window.innerWidth > 768 && sidebar && !sidebar.classList.contains('collapsed')) {
+    sidebar.classList.add('collapsed');
+    document.body.classList.add('sidebar-collapsed');
+    saveSidebarState();
+  }
+}
+
+// Carrega estado salvo do localStorage
+function loadSidebarState() {
+  if (window.innerWidth > 768) {
+    const savedState = localStorage.getItem('sidebarCollapsed');
+    if (savedState === 'true' && sidebar) {
+      sidebar.classList.add('collapsed');
+      document.body.classList.add('sidebar-collapsed');
+    }
+  }
+}
+
+// Toggle sidebar collapse/expand (desktop) - apenas retrai
+sidebarToggleDesktop?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (window.innerWidth > 768 && sidebar) {
+    collapseSidebar();
+  }
+});
+
+// Expande sidebar ao clicar no ícone do Node.js quando retraído
+const sidebarTitle = document.querySelector('.sidebar-title');
+sidebarTitle?.addEventListener('click', (e) => {
+  if (window.innerWidth > 768 && sidebar && sidebar.classList.contains('collapsed')) {
+    e.stopPropagation();
+    expandSidebar();
+  }
+});
+
+// Carrega estado ao iniciar
+loadSidebarState();
+
+// Remove collapsed em mobile (se houver)
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 768 && sidebar) {
+    sidebar.classList.remove('collapsed');
+    document.body.classList.remove('sidebar-collapsed');
+  } else if (window.innerWidth > 768) {
+    loadSidebarState();
+  }
+});
 
 // ============================================
 // COPY CODE FUNCTIONALITY
