@@ -1,0 +1,61 @@
+# docker-compose.yml - Exemplo de orquestração
+#
+# Docker Compose permite definir e rodar múltiplos containers
+# (app + banco de dados) com um único comando.
+#
+# Para usar:
+# 1. docker-compose up -d
+# 2. Acesse http://localhost:3000
+#
+# Para parar:
+# docker-compose down
+
+version: '3.8'
+
+services:
+  # Aplicação Node.js
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/projectnode
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=projectnode
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=senha123
+    depends_on:
+      - mongo
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  # MongoDB (opcional)
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=projectnode
+
+  # PostgreSQL (opcional)
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=projectnode
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=senha123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  mongo_data:
+  postgres_data:
+

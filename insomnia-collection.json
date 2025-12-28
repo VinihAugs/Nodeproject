@@ -1,0 +1,304 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-01-01T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_health",
+      "parentId": "fld_api",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/health",
+      "name": "Health Check",
+      "description": "Verifica se a API está funcionando",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/auth/login",
+      "name": "Login",
+      "description": "Faz login e retorna token JWT",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_list_tasks",
+      "parentId": "fld_tasks",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/tasks",
+      "name": "Listar Tarefas",
+      "description": "Lista todas as tarefas com filtros opcionais",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "status",
+          "value": "pending",
+          "description": "Filtrar por status (pending, in_progress, completed)"
+        },
+        {
+          "name": "priority",
+          "value": "high",
+          "description": "Filtrar por prioridade (low, medium, high)"
+        },
+        {
+          "name": "page",
+          "value": "1",
+          "description": "Número da página"
+        },
+        {
+          "name": "limit",
+          "value": "10",
+          "description": "Itens por página"
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_get_task",
+      "parentId": "fld_tasks",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/tasks/:id",
+      "name": "Buscar Tarefa por ID",
+      "description": "Busca uma tarefa específica por ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "id",
+          "value": "1",
+          "description": "ID da tarefa"
+        }
+      ],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_create_task",
+      "parentId": "fld_tasks",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/tasks",
+      "name": "Criar Tarefa",
+      "description": "Cria uma nova tarefa (requer autenticação)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Nova tarefa\",\n  \"description\": \"Descrição da tarefa\",\n  \"status\": \"pending\",\n  \"priority\": \"high\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}",
+          "description": "Token JWT obtido no login"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_update_task",
+      "parentId": "fld_tasks",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/tasks/:id",
+      "name": "Atualizar Tarefa",
+      "description": "Atualiza uma tarefa existente (requer autenticação)",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Tarefa atualizada\",\n  \"status\": \"completed\",\n  \"priority\": \"medium\"\n}"
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "value": "1",
+          "description": "ID da tarefa"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_delete_task",
+      "parentId": "fld_tasks",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "http://localhost:3000/api/tasks/:id",
+      "name": "Deletar Tarefa",
+      "description": "Deleta uma tarefa (requer autenticação)",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [
+        {
+          "name": "id",
+          "value": "1",
+          "description": "ID da tarefa"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "fld_api",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "API",
+      "description": "Endpoints gerais da API",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995200000,
+      "isPrivate": false
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Autenticação",
+      "description": "Rotas de autenticação",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995200000,
+      "isPrivate": false
+    },
+    {
+      "_id": "fld_tasks",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Tarefas",
+      "description": "CRUD completo de tarefas",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995200000,
+      "isPrivate": false
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Node.js Educativo API",
+      "description": "Collection da API educativa Node.js",
+      "scope": "collection",
+      "_type": "export",
+      "parentId": null
+    },
+    {
+      "_id": "env_main",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "token"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1640995200000
+    }
+  ]
+}
+

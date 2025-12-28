@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#4CAF50">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Node.js Educativo - Guia Completo para Desenvolvedores</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/nodes.png">
+  <link rel="apple-touch-icon" href="/nodes.png">
+  <link rel="shortcut icon" href="/nodes.png">
+  
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2><i class="fab fa-node-js"></i> Node.js</h2>
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <ul class="sidebar-menu">
+      <li><a href="#introducao" class="nav-link active"><i class="fas fa-home"></i> Introdução</a></li>
+      <li><a href="#estrutura" class="nav-link"><i class="fas fa-folder-tree"></i> Estrutura</a></li>
+      <li><a href="#arquitetura" class="nav-link"><i class="fas fa-sitemap"></i> Arquitetura</a></li>
+      <li><a href="#middleware" class="nav-link"><i class="fas fa-cogs"></i> Middleware</a></li>
+      <li><a href="#async" class="nav-link"><i class="fas fa-clock"></i> Async/Await</a></li>
+      <li><a href="#validacao" class="nav-link"><i class="fas fa-check-circle"></i> Validação</a></li>
+      <li><a href="#erros" class="nav-link"><i class="fas fa-exclamation-triangle"></i> Tratamento de Erros</a></li>
+      <li><a href="#database" class="nav-link"><i class="fas fa-database"></i> Banco de Dados</a></li>
+      <li><a href="#testes" class="nav-link"><i class="fas fa-vial"></i> Testes</a></li>
+      <li><a href="#endpoints" class="nav-link"><i class="fas fa-plug"></i> Endpoints</a></li>
+      <li><a href="#testar" class="nav-link"><i class="fas fa-flask"></i> Testar API</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="container">
+        <h1><i class="fab fa-node-js"></i> Node.js Educativo</h1>
+        <p class="hero-subtitle">Guia completo e interativo para desenvolvedores</p>
+        <div class="hero-badges">
+          <span class="badge"><i class="fas fa-code"></i> Express</span>
+          <span class="badge"><i class="fas fa-shield-alt"></i> JWT</span>
+          <span class="badge"><i class="fas fa-database"></i> MongoDB/PostgreSQL</span>
+          <span class="badge"><i class="fas fa-check-double"></i> Testes</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- Introdução -->
+      <section id="introducao" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-book"></i> O que é Node.js?</h2>
+        </div>
+        <div class="content-card">
+          <p class="lead">
+            Node.js é um ambiente de execução JavaScript construído sobre o motor <strong>V8 do Chrome</strong>.
+            Ele permite executar JavaScript no servidor, não apenas no navegador.
+          </p>
+          <div class="highlight-box info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Por que Node.js?</strong>
+              <p>Permite criar aplicações web completas usando apenas JavaScript, tanto no frontend quanto no backend.</p>
+            </div>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo básico</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>// server.js
+const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Olá, Node.js!');
+});
+
+server.listen(3000, () => {
+  console.log('Servidor rodando na porta 3000');
+});</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Estrutura -->
+      <section id="estrutura" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-folder-tree"></i> Estrutura do Projeto</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Uma estrutura organizada facilita a manutenção e escalabilidade do código.
+            Este projeto segue o padrão de <strong>3 camadas (3-layer architecture)</strong>.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Estrutura de pastas</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>project-node/
+├── src/
+│   ├── config/          # Configurações (banco, app)
+│   ├── controllers/     # Camada HTTP (req, res)
+│   ├── middleware/      # Middlewares (auth, log, validação)
+│   ├── models/          # Modelos de dados (MongoDB/PostgreSQL)
+│   ├── routes/          # Definição de rotas
+│   ├── services/        # Lógica de negócio
+│   ├── __tests__/       # Testes
+│   ├── app.js           # Configuração Express
+│   └── server.js        # Ponto de entrada
+├── public/              # Frontend (HTML, CSS, JS)
+├── package.json         # Dependências e scripts
+└── .env                 # Variáveis de ambiente</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Arquitetura -->
+      <section id="arquitetura" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-sitemap"></i> Arquitetura de 3 Camadas</h2>
+        </div>
+        <div class="content-card">
+          <p class="lead">Separação clara de responsabilidades facilita manutenção e testes.</p>
+          <div class="architecture-grid">
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-route"></i></div>
+              <h3>1. Routes</h3>
+              <p>Define endpoints e aplica middlewares</p>
+              <div class="code-snippet">
+                <pre><code>router.post('/tasks', 
+  authenticate,
+  validate(schema),
+  createTask
+);</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-hand-pointer"></i></div>
+              <h3>2. Controllers</h3>
+              <p>Recebe HTTP, valida, chama services</p>
+              <div class="code-snippet">
+                <pre><code>export const createTask = 
+  async (req, res, next) => {
+  try {
+    const task = await 
+      taskService.createTask(req.body);
+    res.status(201).json(task);
+  } catch (error) {
+    next(error);
+  }
+};</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-brain"></i></div>
+              <h3>3. Services</h3>
+              <p>Lógica de negócio pura</p>
+              <div class="code-snippet">
+                <pre><code>export const createTask = 
+  async (taskData) => {
+  const newTask = {
+    ...taskData,
+    id: nextId++
+  };
+  tasks.push(newTask);
+  return newTask;
+};</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Middleware -->
+      <section id="middleware" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-cogs"></i> Middleware</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Middleware são funções que executam entre a requisição e a resposta.
+            Eles podem modificar req/res, executar código, ou terminar o ciclo.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo: Middleware de Log</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>const logger = (req, res, next) => {
+  const startTime = Date.now();
+  
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+    console.log(`${req.method} ${req.url} - ${duration}ms`);
+  });
+  
+  next(); // Passa para o próximo middleware
+};</code></pre>
+          </div>
+          <div class="highlight-box tip">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong>Dica:</strong> Use <code>next()</code> para passar ao próximo middleware ou <code>next(error)</code> para repassar erros.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Async/Await -->
+      <section id="async" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-clock"></i> Async/Await</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Node.js é assíncrono por natureza. Use <code>async/await</code> para código limpo e legível,
+            evitando "callback hell" e promessas encadeadas.
+          </p>
+          <div class="comparison">
+            <div class="comparison-item good">
+              <div class="comparison-header">
+                <i class="fas fa-check-circle"></i> <strong>Bom (async/await)</strong>
+              </div>
+              <div class="code-container">
+                <pre><code>const getTasks = async () => {
+  try {
+    const tasks = await taskService.getAllTasks();
+    return tasks;
+  } catch (error) {
+    console.error('Erro:', error);
+    throw error;
+  }
+};</code></pre>
+              </div>
+            </div>
+            <div class="comparison-item bad">
+              <div class="comparison-header">
+                <i class="fas fa-times-circle"></i> <strong>Evite (callback hell)</strong>
+              </div>
+              <div class="code-container">
+                <pre><code>const getTasks = (callback) => {
+  taskService.getAllTasks((err, tasks) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, tasks);
+    }
+  });
+};</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Validação -->
+      <section id="validacao" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-check-circle"></i> Validação de Dados</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Sempre valide dados de entrada! Use bibliotecas como <strong>Joi</strong> ou <strong>Zod</strong> para validação
+            robusta e mensagens de erro claras.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo com Joi</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>import Joi from 'joi';
+
+const taskSchema = Joi.object({
+  title: Joi.string()
+    .min(3)
+    .max(100)
+    .required(),
+  status: Joi.string()
+    .valid('pending', 'completed')
+    .optional(),
+});
+
+const { error, value } = taskSchema.validate(req.body);
+if (error) {
+  return res.status(400).json({ 
+    error: error.details 
+  });
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tratamento de Erros -->
+      <section id="erros" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-exclamation-triangle"></i> Tratamento de Erros</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Centralize o tratamento de erros em um middleware. Isso garante respostas
+            consistentes e facilita o debug.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Middleware de Erro Centralizado</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>const errorHandler = (err, req, res, next) => {
+  console.error('Erro:', err);
+  
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).json({
+    error: true,
+    message: err.message,
+  });
+};
+
+// Use no final do app.js
+app.use(errorHandler);</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Banco de Dados -->
+      <section id="database" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-database"></i> Banco de Dados</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Este projeto inclui exemplos de integração com <strong>MongoDB (Mongoose)</strong> e 
+            <strong>PostgreSQL (pg)</strong>. Veja os arquivos em <code>src/models/</code> e 
+            <code>src/config/database.js</code>.
+          </p>
+          <div class="highlight-box note">
+            <i class="fas fa-sticky-note"></i>
+            <div>
+              <strong>Nota:</strong> Este projeto não requer banco de dados rodando,
+              mas mostra como seria a implementação real. Os dados são armazenados em memória
+              para fins educativos.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testes -->
+      <section id="testes" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-vial"></i> Testes</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Testes garantem que o código funciona corretamente e previne regressões.
+            Este projeto usa <strong>Jest</strong> para testes unitários e <strong>Supertest</strong> para testes de integração.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo de teste</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>import request from 'supertest';
+import app from '../app.js';
+
+test('GET /api/tasks retorna lista', async () => {
+  const response = await request(app)
+    .get('/api/tasks')
+    .expect(200);
+  
+  expect(response.body.success).toBe(true);
+});</code></pre>
+          </div>
+          <div class="command-box">
+            <strong>Para rodar:</strong>
+            <code class="command">npm test</code>
+          </div>
+        </div>
+      </section>
+
+      <!-- Endpoints -->
+      <section id="endpoints" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-plug"></i> Endpoints da API</h2>
+        </div>
+        <div class="content-card">
+          <div class="endpoints-grid">
+            <div class="endpoint-card" data-endpoint="health" data-method="GET" data-path="/api/health">
+              <span class="method-badge get">GET</span>
+              <code>/api/health</code>
+              <p>Health check da aplicação</p>
+            </div>
+            <div class="endpoint-card" data-endpoint="login" data-method="POST" data-path="/api/auth/login">
+              <span class="method-badge post">POST</span>
+              <code>/api/auth/login</code>
+              <p>Login e obtenção de token JWT</p>
+            </div>
+            <div class="endpoint-card" data-endpoint="list-tasks" data-method="GET" data-path="/api/tasks">
+              <span class="method-badge get">GET</span>
+              <code>/api/tasks</code>
+              <p>Lista todas as tarefas (com filtros e paginação)</p>
+            </div>
+            <div class="endpoint-card" data-endpoint="create-task" data-method="POST" data-path="/api/tasks">
+              <span class="method-badge post">POST</span>
+              <code>/api/tasks</code>
+              <p>Cria nova tarefa <span class="auth-badge">🔒 Auth</span></p>
+            </div>
+            <div class="endpoint-card" data-endpoint="get-task" data-method="GET" data-path="/api/tasks/:id">
+              <span class="method-badge get">GET</span>
+              <code>/api/tasks/:id</code>
+              <p>Busca tarefa por ID</p>
+            </div>
+            <div class="endpoint-card" data-endpoint="update-task" data-method="PUT" data-path="/api/tasks/:id">
+              <span class="method-badge put">PUT</span>
+              <code>/api/tasks/:id</code>
+              <p>Atualiza tarefa <span class="auth-badge">🔒 Auth</span></p>
+            </div>
+            <div class="endpoint-card" data-endpoint="delete-task" data-method="DELETE" data-path="/api/tasks/:id">
+              <span class="method-badge delete">DELETE</span>
+              <code>/api/tasks/:id</code>
+              <p>Deleta tarefa <span class="auth-badge">🔒 Auth</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testar API -->
+      <section id="testar" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-flask"></i> Testar a API</h2>
+        </div>
+        <div class="content-card">
+          <div class="api-tester-grid">
+            <div class="tester-card">
+              <div class="tester-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h3>1. Login</h3>
+              </div>
+              <p>Faça login para obter um token JWT</p>
+              <button class="btn btn-primary" onclick="testLogin()">
+                <i class="fas fa-play"></i> Fazer Login
+              </button>
+              <div id="login-result" class="result-box"></div>
+            </div>
+            <div class="tester-card">
+              <div class="tester-header">
+                <i class="fas fa-plus-circle"></i>
+                <h3>2. Criar Tarefa</h3>
+              </div>
+              <input type="text" id="task-title" class="input-field" placeholder="Título da tarefa" />
+              <button class="btn btn-primary" onclick="createTask()">
+                <i class="fas fa-play"></i> Criar Tarefa
+              </button>
+              <div id="create-result" class="result-box"></div>
+            </div>
+            <div class="tester-card">
+              <div class="tester-header">
+                <i class="fas fa-list"></i>
+                <h3>3. Listar Tarefas</h3>
+              </div>
+              <p>Busca todas as tarefas disponíveis</p>
+              <button class="btn btn-primary" onclick="listTasks()">
+                <i class="fas fa-play"></i> Listar Tarefas
+              </button>
+              <div id="list-result" class="result-box"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p><i class="fas fa-heart"></i> Projeto educativo Node.js - Desenvolvido para aprendizado</p>
+        <p class="footer-links">
+          <a href="https://nodejs.org" target="_blank"><i class="fab fa-node-js"></i> Node.js</a>
+          <a href="https://expressjs.com" target="_blank"><i class="fas fa-server"></i> Express</a>
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Modal de Exemplo de Endpoint -->
+  <div class="modal-overlay" id="endpointModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">
+          <span class="method-badge-modal" id="modalMethod">GET</span>
+          <code id="modalPath">/api/endpoint</code>
+        </h3>
+        <button class="modal-close" onclick="closeEndpointModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-description" id="modalDescription"></div>
+        <div class="code-examples">
+          <div class="example-tabs">
+            <button class="tab-btn active" onclick="switchTab('axios')">Axios</button>
+            <button class="tab-btn" onclick="switchTab('fetch')">Fetch API</button>
+          </div>
+          <div class="tab-content active" id="axios-tab">
+            <div class="code-container">
+              <div class="code-header">
+                <span>Exemplo com Axios</span>
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+              </div>
+              <pre><code id="axios-code"></code></pre>
+            </div>
+          </div>
+          <div class="tab-content" id="fetch-tab">
+            <div class="code-container">
+              <div class="code-header">
+                <span>Exemplo com Fetch API</span>
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+              </div>
+              <pre><code id="fetch-code"></code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="modal-info" id="modalInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

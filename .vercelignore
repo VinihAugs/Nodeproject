@@ -1,0 +1,15 @@
+node_modules
+.env
+.env.local
+.git
+.vscode
+.idea
+*.log
+coverage
+__tests__
+.eslintrc.json
+.editorconfig
+docker-compose.yml
+Dockerfile
+README.md
+
