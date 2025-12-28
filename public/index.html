@@ -36,6 +36,13 @@
       <li><a href="#testes" class="nav-link"><i class="fas fa-vial"></i> Testes</a></li>
       <li><a href="#endpoints" class="nav-link"><i class="fas fa-plug"></i> Endpoints</a></li>
       <li><a href="#testar" class="nav-link"><i class="fas fa-flask"></i> Testar API</a></li>
+      <li class="menu-divider"></li>
+      <li><a href="#docker-intro" class="nav-link"><i class="fab fa-docker"></i> Docker - Introdução</a></li>
+      <li><a href="#docker-conceitos" class="nav-link"><i class="fas fa-cube"></i> Docker - Conceitos</a></li>
+      <li><a href="#dockerfile" class="nav-link"><i class="fas fa-file-code"></i> Dockerfile</a></li>
+      <li><a href="#docker-compose" class="nav-link"><i class="fas fa-layer-group"></i> Docker Compose</a></li>
+      <li><a href="#docker-comandos" class="nav-link"><i class="fas fa-terminal"></i> Comandos Docker</a></li>
+      <li><a href="#docker-manutencao" class="nav-link"><i class="fas fa-tools"></i> Manutenção</a></li>
     </ul>
   </nav>
 
@@ -473,6 +480,818 @@ test('GET /api/tasks retorna lista', async () => {
                 <i class="fas fa-play"></i> Listar Tarefas
               </button>
               <div id="list-result" class="result-box"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker - Introdução -->
+      <section id="docker-intro" class="content-section">
+        <div class="section-header">
+          <h2><i class="fab fa-docker"></i> O que é Docker?</h2>
+        </div>
+        <div class="content-card">
+          <p class="lead">
+            Docker é uma plataforma que permite criar, implantar e executar aplicações em <strong>containers</strong>.
+            Containers são ambientes isolados que empacotam a aplicação com todas as suas dependências.
+          </p>
+          <div class="highlight-box info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Por que usar Docker?</strong>
+              <p>Garante que sua aplicação funcione igual em qualquer ambiente: desenvolvimento, teste e produção. "Funciona na minha máquina" deixa de ser um problema!</p>
+            </div>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo básico</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code># Build da imagem
+docker build -t minha-app .
+
+# Rodar o container
+docker run -p 3000:3000 minha-app
+
+# Ver containers rodando
+docker ps</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker - Conceitos -->
+      <section id="docker-conceitos" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-cube"></i> Conceitos Fundamentais</h2>
+        </div>
+        <div class="content-card">
+          <div class="architecture-grid">
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-box"></i></div>
+              <h3>Imagem (Image)</h3>
+              <p>É um template read-only usado para criar containers. Tipo um "molde" da sua aplicação.</p>
+              <div class="code-snippet">
+                <pre><code># Imagens são criadas a partir de Dockerfiles
+docker build -t minha-imagem .
+
+# Ou baixadas de repositórios
+docker pull node:18</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-cube"></i></div>
+              <h3>Container</h3>
+              <p>É uma instância executável de uma imagem. É onde sua aplicação realmente roda.</p>
+              <div class="code-snippet">
+                <pre><code># Cria e inicia um container
+docker run node:18
+
+# Container rodando em background
+docker run -d -p 3000:3000 minha-app</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-file-code"></i></div>
+              <h3>Dockerfile</h3>
+              <p>Arquivo de texto com instruções para construir uma imagem. É a "receita" do container.</p>
+              <div class="code-snippet">
+                <pre><code># Dockerfile
+FROM node:18
+WORKDIR /app
+COPY package.json .
+RUN npm install
+CMD ["node", "app.js"]</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-box tip">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong>Analogia simples:</strong>
+              <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Imagem</strong> = Classe em programação (template)</li>
+                <li><strong>Container</strong> = Instância/objeto (execução real)</li>
+                <li><strong>Dockerfile</strong> = Código fonte da classe</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dockerfile -->
+      <section id="dockerfile" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-file-code"></i> Dockerfile - Criando uma Imagem</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            O Dockerfile é um arquivo de texto que contém todas as instruções para construir uma imagem Docker.
+            Cada linha é um comando que o Docker executa em ordem.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Dockerfile completo do projeto</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code># Dockerfile
+# Define a imagem base (Node.js versão 18, versão Alpine é mais leve)
+FROM node:18-alpine
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia apenas os arquivos de dependências primeiro
+# Isso permite que o Docker use cache se as dependências não mudarem
+COPY package*.json ./
+
+# Instala apenas dependências de produção
+RUN npm ci --only=production
+
+# Copia o resto do código da aplicação
+COPY . .
+
+# Expõe a porta 3000 para o mundo externo
+EXPOSE 3000
+
+# Define variáveis de ambiente padrão
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Comando que será executado quando o container iniciar
+CMD ["node", "src/server.js"]</code></pre>
+          </div>
+          <div class="comparison">
+            <div class="comparison-item good">
+              <div class="comparison-header">
+                <i class="fas fa-check-circle"></i> <strong>Boa prática: Multi-stage</strong>
+              </div>
+              <div class="code-container">
+                <pre><code># Stage 1: Build
+FROM node:18 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Stage 2: Production
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --only=production
+CMD ["node", "dist/server.js"]</code></pre>
+              </div>
+            </div>
+            <div class="comparison-item bad">
+              <div class="comparison-header">
+                <i class="fas fa-times-circle"></i> <strong>Evite: Imagem grande</strong>
+              </div>
+              <div class="code-container">
+                <pre><code># ❌ Copia tudo de uma vez (perde cache)
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["node", "src/server.js"]</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-box note">
+            <i class="fas fa-sticky-note"></i>
+            <div>
+              <strong>Dica de performance:</strong> Copie primeiro os arquivos que mudam menos (package.json) e depois o código. 
+              Isso permite que o Docker reutilize o cache das camadas anteriores.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker Compose -->
+      <section id="docker-compose" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-layer-group"></i> Docker Compose - Orquestração</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Docker Compose permite definir e gerenciar múltiplos containers com um único arquivo YAML.
+            Perfeito para rodar aplicação + banco de dados + outros serviços juntos.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>docker-compose.yml do projeto</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>version: '3.8'
+
+services:
+  # Aplicação Node.js
+  app:
+    build: .                    # Constrói a imagem do Dockerfile
+    ports:
+      - "3000:3000"            # Mapeia porta host:container
+    environment:                # Variáveis de ambiente
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:                # Aguarda esses serviços iniciarem
+      - mongo
+      - postgres
+    volumes:                   # Monta diretórios
+      - .:/app                 # Código local no container
+      - /app/node_modules      # Evita sobrescrever node_modules
+
+  # MongoDB
+  mongo:
+    image: mongo:7             # Usa imagem oficial
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db   # Persiste dados
+    environment:
+      - MONGO_INITDB_DATABASE=projectnode
+
+  # PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=projectnode
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=senha123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Volumes nomeados (persistem dados)
+volumes:
+  mongo_data:
+  postgres_data:</code></pre>
+          </div>
+          <div class="highlight-box tip">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong>Por que usar Docker Compose?</strong>
+              <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>Gerencia múltiplos containers com um comando</li>
+                <li>Configura rede entre containers automaticamente</li>
+                <li>Gerencia volumes e persistência de dados</li>
+                <li>Facilita desenvolvimento local com banco de dados</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comandos Docker -->
+      <section id="docker-comandos" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-terminal"></i> Comandos Docker Essenciais</h2>
+        </div>
+        <div class="content-card">
+          <p>Comandos mais usados no dia a dia com Docker.</p>
+          
+          <div class="command-section">
+            <h3><i class="fas fa-hammer"></i> Build e Imagens</h3>
+            <div class="command-box">
+              <code class="command">docker build -t nome-da-imagem .</code>
+              <p>Constrói uma imagem a partir do Dockerfile</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker images</code>
+              <p>Lista todas as imagens locais</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker rmi nome-da-imagem</code>
+              <p>Remove uma imagem</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-play-circle"></i> Containers</h3>
+            <div class="command-box">
+              <code class="command">docker run -p 3000:3000 nome-da-imagem</code>
+              <p>Cria e inicia um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker run -d nome-da-imagem</code>
+              <p>Roda em background (detached mode)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker ps</code>
+              <p>Lista containers rodando</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker ps -a</code>
+              <p>Lista todos os containers (incluindo parados)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker stop container-id</code>
+              <p>Para um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker rm container-id</code>
+              <p>Remove um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker logs container-id</code>
+              <p>Mostra os logs de um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker exec -it container-id sh</code>
+              <p>Entra dentro do container (shell interativo)</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-layer-group"></i> Docker Compose</h3>
+            <div class="command-box">
+              <code class="command">docker-compose up</code>
+              <p>Sobe todos os serviços definidos no docker-compose.yml</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose up -d</code>
+              <p>Sobe em background (detached)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose down</code>
+              <p>Para e remove todos os containers</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose logs -f</code>
+              <p>Mostra logs de todos os serviços (follow mode)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose build</code>
+              <p>Constrói as imagens novamente</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose restart</code>
+              <p>Reinicia todos os serviços</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-broom"></i> Limpeza</h3>
+            <div class="command-box">
+              <code class="command">docker system prune</code>
+              <p>Remove containers, redes e imagens não usadas</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker volume prune</code>
+              <p>Remove volumes não usados</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker system df</code>
+              <p>Mostra uso de espaço do Docker</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker - Introdução -->
+      <section id="docker-intro" class="content-section">
+        <div class="section-header">
+          <h2><i class="fab fa-docker"></i> O que é Docker?</h2>
+        </div>
+        <div class="content-card">
+          <p class="lead">
+            Docker é uma plataforma que permite criar, implantar e executar aplicações em <strong>containers</strong>.
+            Containers são ambientes isolados que empacotam a aplicação com todas as suas dependências.
+          </p>
+          <div class="highlight-box info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Por que usar Docker?</strong>
+              <p>Garante que sua aplicação funcione igual em qualquer ambiente: desenvolvimento, teste e produção. "Funciona na minha máquina" deixa de ser um problema!</p>
+            </div>
+          </div>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Exemplo básico</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code># Build da imagem
+docker build -t minha-app .
+
+# Rodar o container
+docker run -p 3000:3000 minha-app
+
+# Ver containers rodando
+docker ps</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker - Conceitos -->
+      <section id="docker-conceitos" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-cube"></i> Conceitos Fundamentais</h2>
+        </div>
+        <div class="content-card">
+          <div class="architecture-grid">
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-box"></i></div>
+              <h3>Imagem (Image)</h3>
+              <p>É um template read-only usado para criar containers. Tipo um "molde" da sua aplicação.</p>
+              <div class="code-snippet">
+                <pre><code># Imagens são criadas a partir de Dockerfiles
+docker build -t minha-imagem .
+
+# Ou baixadas de repositórios
+docker pull node:18</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-cube"></i></div>
+              <h3>Container</h3>
+              <p>É uma instância executável de uma imagem. É onde sua aplicação realmente roda.</p>
+              <div class="code-snippet">
+                <pre><code># Cria e inicia um container
+docker run node:18
+
+# Container rodando em background
+docker run -d -p 3000:3000 minha-app</code></pre>
+              </div>
+            </div>
+            <div class="arch-card">
+              <div class="arch-icon"><i class="fas fa-file-code"></i></div>
+              <h3>Dockerfile</h3>
+              <p>Arquivo de texto com instruções para construir uma imagem. É a "receita" do container.</p>
+              <div class="code-snippet">
+                <pre><code># Dockerfile
+FROM node:18
+WORKDIR /app
+COPY package.json .
+RUN npm install
+CMD ["node", "app.js"]</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-box tip">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong>Analogia simples:</strong>
+              <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li><strong>Imagem</strong> = Classe em programação (template)</li>
+                <li><strong>Container</strong> = Instância/objeto (execução real)</li>
+                <li><strong>Dockerfile</strong> = Código fonte da classe</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dockerfile -->
+      <section id="dockerfile" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-file-code"></i> Dockerfile - Criando uma Imagem</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            O Dockerfile é um arquivo de texto que contém todas as instruções para construir uma imagem Docker.
+            Cada linha é um comando que o Docker executa em ordem.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>Dockerfile completo do projeto</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code># Dockerfile
+# Define a imagem base (Node.js versão 18, versão Alpine é mais leve)
+FROM node:18-alpine
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copia apenas os arquivos de dependências primeiro
+# Isso permite que o Docker use cache se as dependências não mudarem
+COPY package*.json ./
+
+# Instala apenas dependências de produção
+RUN npm ci --only=production
+
+# Copia o resto do código da aplicação
+COPY . .
+
+# Expõe a porta 3000 para o mundo externo
+EXPOSE 3000
+
+# Define variáveis de ambiente padrão
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Comando que será executado quando o container iniciar
+CMD ["node", "src/server.js"]</code></pre>
+          </div>
+          <div class="comparison">
+            <div class="comparison-item good">
+              <div class="comparison-header">
+                <i class="fas fa-check-circle"></i> <strong>Boa prática: Multi-stage</strong>
+              </div>
+              <div class="code-container">
+                <pre><code># Stage 1: Build
+FROM node:18 AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Stage 2: Production
+FROM node:18-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY package*.json ./
+RUN npm ci --only=production
+CMD ["node", "dist/server.js"]</code></pre>
+              </div>
+            </div>
+            <div class="comparison-item bad">
+              <div class="comparison-header">
+                <i class="fas fa-times-circle"></i> <strong>Evite: Imagem grande</strong>
+              </div>
+              <div class="code-container">
+                <pre><code># ❌ Copia tudo de uma vez (perde cache)
+FROM node:18
+WORKDIR /app
+COPY . .
+RUN npm install
+CMD ["node", "src/server.js"]</code></pre>
+              </div>
+            </div>
+          </div>
+          <div class="highlight-box note">
+            <i class="fas fa-sticky-note"></i>
+            <div>
+              <strong>Dica de performance:</strong> Copie primeiro os arquivos que mudam menos (package.json) e depois o código. 
+              Isso permite que o Docker reutilize o cache das camadas anteriores.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Docker Compose -->
+      <section id="docker-compose" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-layer-group"></i> Docker Compose - Orquestração</h2>
+        </div>
+        <div class="content-card">
+          <p>
+            Docker Compose permite definir e gerenciar múltiplos containers com um único arquivo YAML.
+            Perfeito para rodar aplicação + banco de dados + outros serviços juntos.
+          </p>
+          <div class="code-container">
+            <div class="code-header">
+              <span>docker-compose.yml do projeto</span>
+              <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+            </div>
+            <pre><code>version: '3.8'
+
+services:
+  # Aplicação Node.js
+  app:
+    build: .                    # Constrói a imagem do Dockerfile
+    ports:
+      - "3000:3000"            # Mapeia porta host:container
+    environment:                # Variáveis de ambiente
+      - NODE_ENV=production
+      - PORT=3000
+    depends_on:                # Aguarda esses serviços iniciarem
+      - mongo
+      - postgres
+    volumes:                   # Monta diretórios
+      - .:/app                 # Código local no container
+      - /app/node_modules      # Evita sobrescrever node_modules
+
+  # MongoDB
+  mongo:
+    image: mongo:7             # Usa imagem oficial
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db   # Persiste dados
+    environment:
+      - MONGO_INITDB_DATABASE=projectnode
+
+  # PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=projectnode
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=senha123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Volumes nomeados (persistem dados)
+volumes:
+  mongo_data:
+  postgres_data:</code></pre>
+          </div>
+          <div class="highlight-box tip">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong>Por que usar Docker Compose?</strong>
+              <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
+                <li>Gerencia múltiplos containers com um comando</li>
+                <li>Configura rede entre containers automaticamente</li>
+                <li>Gerencia volumes e persistência de dados</li>
+                <li>Facilita desenvolvimento local com banco de dados</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Comandos Docker -->
+      <section id="docker-comandos" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-terminal"></i> Comandos Docker Essenciais</h2>
+        </div>
+        <div class="content-card">
+          <p>Comandos mais usados no dia a dia com Docker.</p>
+          
+          <div class="command-section">
+            <h3><i class="fas fa-hammer"></i> Build e Imagens</h3>
+            <div class="command-box">
+              <code class="command">docker build -t nome-da-imagem .</code>
+              <p>Constrói uma imagem a partir do Dockerfile</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker images</code>
+              <p>Lista todas as imagens locais</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker rmi nome-da-imagem</code>
+              <p>Remove uma imagem</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-play-circle"></i> Containers</h3>
+            <div class="command-box">
+              <code class="command">docker run -p 3000:3000 nome-da-imagem</code>
+              <p>Cria e inicia um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker run -d nome-da-imagem</code>
+              <p>Roda em background (detached mode)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker ps</code>
+              <p>Lista containers rodando</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker ps -a</code>
+              <p>Lista todos os containers (incluindo parados)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker stop container-id</code>
+              <p>Para um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker rm container-id</code>
+              <p>Remove um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker logs container-id</code>
+              <p>Mostra os logs de um container</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker exec -it container-id sh</code>
+              <p>Entra dentro do container (shell interativo)</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-layer-group"></i> Docker Compose</h3>
+            <div class="command-box">
+              <code class="command">docker-compose up</code>
+              <p>Sobe todos os serviços definidos no docker-compose.yml</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose up -d</code>
+              <p>Sobe em background (detached)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose down</code>
+              <p>Para e remove todos os containers</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose logs -f</code>
+              <p>Mostra logs de todos os serviços (follow mode)</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose build</code>
+              <p>Constrói as imagens novamente</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker-compose restart</code>
+              <p>Reinicia todos os serviços</p>
+            </div>
+          </div>
+
+          <div class="command-section">
+            <h3><i class="fas fa-broom"></i> Limpeza</h3>
+            <div class="command-box">
+              <code class="command">docker system prune</code>
+              <p>Remove containers, redes e imagens não usadas</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker volume prune</code>
+              <p>Remove volumes não usados</p>
+            </div>
+            <div class="command-box">
+              <code class="command">docker system df</code>
+              <p>Mostra uso de espaço do Docker</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Manutenção Docker -->
+      <section id="docker-manutencao" class="content-section">
+        <div class="section-header">
+          <h2><i class="fas fa-tools"></i> Manutenção e Boas Práticas</h2>
+        </div>
+        <div class="content-card">
+          <p class="lead">Dicas importantes para manter seus containers saudáveis e eficientes.</p>
+
+          <div class="maintenance-grid">
+            <div class="maintenance-card">
+              <h3><i class="fas fa-weight"></i> Tamanho das Imagens</h3>
+              <p>Use imagens base leves (Alpine Linux) para reduzir o tamanho:</p>
+              <div class="code-snippet">
+                <pre><code># ✅ Leve (~40MB)
+FROM node:18-alpine
+
+# ❌ Pesado (~900MB)
+FROM node:18</code></pre>
+              </div>
+            </div>
+
+            <div class="maintenance-card">
+              <h3><i class="fas fa-layer-group"></i> Cache de Layers</h3>
+              <p>Ordene os comandos do mais estável para o mais mutável:</p>
+              <div class="code-snippet">
+                <pre><code># 1. Instala dependências (muda pouco)
+COPY package*.json ./
+RUN npm install
+
+# 2. Copia código (muda sempre)
+COPY . .</code></pre>
+              </div>
+            </div>
+
+            <div class="maintenance-card">
+              <h3><i class="fas fa-shield-alt"></i> Segurança</h3>
+              <ul>
+                <li>Não use usuário root dentro do container</li>
+                <li>Mantenha imagens base atualizadas</li>
+                <li>Não exponha portas desnecessárias</li>
+                <li>Use secrets para dados sensíveis</li>
+              </ul>
+            </div>
+
+            <div class="maintenance-card">
+              <h3><i class="fas fa-database"></i> Persistência de Dados</h3>
+              <p>Use volumes para dados que precisam persistir:</p>
+              <div class="code-snippet">
+                <pre><code>volumes:
+  - ./dados:/app/dados
+  - nome_volume:/app/persistente</code></pre>
+              </div>
+            </div>
+
+            <div class="maintenance-card">
+              <h3><i class="fas fa-network-wired"></i> Networking</h3>
+              <p>Containers no mesmo docker-compose podem se comunicar pelo nome do serviço:</p>
+              <div class="code-snippet">
+                <pre><code># Container "app" acessa "db" por:
+mongodb://db:27017</code></pre>
+              </div>
+            </div>
+
+            <div class="maintenance-card">
+              <h3><i class="fas fa-sync-alt"></i> Atualizações</h3>
+              <p>Para atualizar uma aplicação:</p>
+              <div class="code-snippet">
+                <pre><code># 1. Rebuild da imagem
+docker-compose build
+
+# 2. Reinicia com nova imagem
+docker-compose up -d</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <div class="highlight-box info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <strong>Monitoramento:</strong>
+              <p>Use <code>docker stats</code> para ver uso de CPU, memória e rede em tempo real de todos os containers.</p>
             </div>
           </div>
         </div>
